@@ -1,5 +1,5 @@
 import { Card } from './ui/card';
-import { useEffect, useState } from 'react';
+import { SetStateAction, useEffect, useState } from 'react';
 
 interface Box {
   id: string;
@@ -25,22 +25,25 @@ export function RobotMap({ boxes, robotPosition, robotStatus }: RobotMapProps) {
     '4': { x: 500, y: 150 },
   };
 
-  // Позиция фургона
   const vanPosition = { x: 250, y: 450 };
   const robotDepo = { x: 350, y: 50 }
 
   useEffect(() => {
     if (robotStatus === 'loading') {
       const sortedBoxes = [...boxes].sort((a, b) => a.order - b.order);
-      let currentBox = 0;
+      const targets: SetStateAction<{ x: number; y: number; }>[] = [];
+      sortedBoxes.forEach(box => {
+        targets.push(boxPositions[box.id]); 
+        targets.push(vanPosition); 
+      });
 
+      let currentTarget = 0;
       const loadInterval = setInterval(() => {
-        if (currentBox < sortedBoxes.length) {
-          const box = sortedBoxes[currentBox];
-          setAnimatedPosition(boxPositions[box.id]);
-          currentBox++;
+        if (currentTarget < targets.length) {
+          setAnimatedPosition(targets[currentTarget]);
+          currentTarget++;
         } else {
-          setAnimatedPosition(vanPosition);
+          setAnimatedPosition(vanPosition)
           clearInterval(loadInterval);
         }
       }, 2000);
