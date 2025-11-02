@@ -19,7 +19,6 @@ export default function App() {
     setRobotStatus('scanning');
     setBoxes(boxes.map(box => ({ ...box, scanned: false })));
     
-    // Симуляция сканирования коробок
     let scanIndex = 0;
     const scanInterval = setInterval(() => {
       if (scanIndex < boxes.length) {
